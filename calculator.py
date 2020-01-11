@@ -4,8 +4,30 @@
 import operator
 class Calculator(object):
 
-    ops = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv}
-    operators = "()*/+-"
+    ops = {'+': operator.add, '--': operator.add, '-': operator.sub,
+           '*': operator.mul, '/': operator.truediv, '**': operator.pow,
+           "//": operator.floordiv}
+
+    def handle_whitespaces(self, string):
+        """remove all present whitespaces
+        and separate numbers and operators.
+        """
+        operators = "()*/+-"
+        string = string.replace(" ", "")  # first remove all spaces
+        parts = []
+        for i, x in enumerate(string[:-1]): # place " " for clean separation
+            parts.append(x)
+            if x.isdigit() and string[i+1] in operators[2:]:
+                parts.append(" ")
+            if x in operators[2:] and string[i+1].isdigit():
+                parts.append(" ")
+            if x in operators[2:] and string[i+1] in operators[:2]:
+                parts.append(" ")
+            if x in operators[:2] and string[i+1] in operators[2:]:
+                parts.append(" ")
+        parts.append(string[-1])
+        proc_string = "".join(parts)
+        return proc_string
 
     def solve_part(self, arr):  # sample input: ['13', '*', '4']
         """solve one part of the equation, like parentheses."""
