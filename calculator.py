@@ -1,3 +1,6 @@
+# todo:
+# handle absence of whitespaces
+
 import operator
 class Calculator(object):
 
@@ -27,36 +30,36 @@ class Calculator(object):
             arr.remove(None)
         return float(arr[0])
 
-    def find_parentheses(self, string):
-        """handle parentheses and return list of parentheses and string with placeholders for them."""
-        parentheses = []
-        # handle parentheses; Note: does not work for multi-parentheses yet
-        while "(" in string:
-            par = string[string.find("("):string.find(")")+1]
-            parentheses.append(par)
-            string = string[:string.find("(")] + "parent" + string[string.find(")")+1:]
-        par_string = string
-        for i, par in enumerate(parentheses):
-            parentheses[i] = par.lstrip("(").rstrip(")").split()
-        print(parentheses)
-        return par_string, parentheses
+    def inner_parentheses(self, string):
+        """find inner parentheses and return solved contents."""
+        start = string.rfind("(")
+        end = start + string[start:].find(")")
+        par = string[start:end].lstrip("(").rstrip(")")
+        #print(f"par: {par}")
+        # todo handle whitespaces
+        par_list = par.split()  # split into list by " "
+        #print(f"par_list: {par_list}")
+        result = self.solve_part(par_list)
+        # modify string:
+        string = string[:start] + str(result) + string[end+1:]
+        return string
 
     def evaluate(self, string):
         """handle string input and return result."""
-        par_string, parentheses = self.find_parentheses(string)
 
-        for i, b in enumerate(parentheses):
-            print(b)
-            parentheses[i] = self.solve_part(b)
-        while "parent" in par_string:
-            par_string = par_string.replace("parent", str(parentheses[0]), 1)
-            parentheses.remove(parentheses[0])
-
+        while "(" in string:
+            string = self.inner_parentheses(string)
         # when all parentheses are solved:
-        rest = par_string.split()
+        #print(f"string: {string}")
+        rest = string.split()
+        #print(f"rest: {rest}")
         result = self.solve_part(rest)
 
         return result
 
 #tests:
-print(Calculator().evaluate("2 + 5 - (4 + 2)"))
+print(Calculator().evaluate("2.2 * (5.5 * 2)"))
+
+print(Calculator().inner_parentheses("2.2 * (5.5 * 2)"))
+
+print(Calculator().evaluate("(10 / 2) + 7"))
