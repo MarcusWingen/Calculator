@@ -1,24 +1,79 @@
 import unittest
 import calculator
+import random as rd
+
+rnd_num = rd.randint(-50,100)
+rnd_op = rd.choice(["+","-","*","/","//","**"])
 
 class TestStingCalc(unittest.TestCase):
 
-    # all test methods must start with "test_" or they will not run
-    def test_solve_part(self):
-        """one test containing five conditions"""
-        self.assertEqual(calculator.Calculator().solve_part(["10", "/", "2", "+", "7"]), 12)
-        self.assertEqual(calculator.Calculator().solve_part(["10", "+", "2", "+", "7"]), 19)
-        self.assertEqual(calculator.Calculator().solve_part(["10", "-", "2", "/", "2"]), 9)
-        self.assertEqual(calculator.Calculator().solve_part(["10", "*", "2", "*", "7"]), 140)
-        self.assertEqual(calculator.Calculator().solve_part(["10", "-", "2", "+", "7"]), 15)
-
     def test_evaluate(self):
-        """one test containing five conditions"""
-        self.assertEqual(calculator.Calculator().evaluate("10 / 2 + 7.2"), eval("10 / 2 + 7.2"))
-        self.assertEqual(calculator.Calculator().evaluate("10 / (2 + 3)"), eval("10 / (2 + 3)"))
-        #self.assertEqual(calculator.Calculator().evaluate("(10 / 2) + 7"), eval("(10 / 2) + 7"))
-        self.assertEqual(calculator.Calculator().evaluate("10 / 2 + 7 - -19"), eval("10 / 2 + 7 - -19"))
-        self.assertEqual(calculator.Calculator().evaluate("10 / 2 + 700"), 705)
+        """test 1"""
+        self.assertAlmostEqual(calculator.Calculator().evaluate("10 / 2 + 7.2"), eval("10 / 2 + 7.2"))
+        self.assertAlmostEqual(calculator.Calculator().evaluate("10 / (2 + 3)"), eval("10 / (2 + 3)"))
+        self.assertAlmostEqual(calculator.Calculator().evaluate("(10 / 2) + 7"), eval("(10 / 2) + 7"))
+        self.assertAlmostEqual(calculator.Calculator().evaluate("10 / 2 + 7 - -19"), eval("10 / 2 + 7 - -19"))
+        self.assertAlmostEqual(calculator.Calculator().evaluate("10 / 2 + 700"), 705)
+        # advanced test:
+        self.assertEqual(calculator.Calculator().evaluate("(-5 / (2 + 3.33) * 4) - -6"),
+                                                    eval("(-5 / (2 + 3.33) * 4) - -6"))
+        self.assertEqual(calculator.Calculator().evaluate("(2 / (2 + 3.33) ** 4) - -6"),
+                                                     eval("(2 / (2 + 3.33) ** 4) - -6"))
+        self.assertEqual(calculator.Calculator().evaluate("(2.02 / (2 + -3.33) * 0.4) * -6"),
+                                                    eval("(2.02 / (2 + -3.33) * 0.4) * -6"))
+
+        # random test
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+        rnd_num = rd.randint(1, 10)
+        rnd_op = rd.choice(["+", "-", "*", "/", "//"])
+        self.assertEqual(calculator.Calculator().evaluate(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"),
+                         eval(f"{rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num} {rnd_op} {rnd_num}"))
+
+
+
 
 test1=""
 test2="2+4"
