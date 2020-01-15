@@ -1,15 +1,27 @@
 import operator
+import locale
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
+    def __init__(self):
+        super().__init__()
+        # timer to scale widgets to window size
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.adjust_sizes)
+        self.timer.start(200)
 
     def show(self, expression):
         """show result of entered expression in lists."""
+        locale.setlocale(locale.LC_ALL, '')
         result = self.calc(expression)
+        output = f"{result:n}"
         self.in_list.insertItem(0, expression)
-        self.out_list.insertItem(0, str(result))
-        self.entry.setText(str(result))
+        self.out_list.insertItem(0, output)
+        self.entry.setText(output)
 
+    def clear_history(self):
+        self.in_list.clear()
+        self.out_list.clear()
 
     def calc(self, expression):
         """handle string input and return result."""
@@ -131,10 +143,10 @@ class Ui_MainWindow(object):
             return int(result)
         return result
 
-
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(632, 377)
+        MainWindow.resize(630, 355)
+        MainWindow.setMinimumSize(QtCore.QSize(630, 160))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.entry = QtWidgets.QLineEdit(self.centralwidget)
@@ -151,13 +163,13 @@ class Ui_MainWindow(object):
         self.calc_button.setFont(font)
         self.calc_button.setObjectName("calc_button")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(100, 80, 41, 21))
+        self.label.setGeometry(QtCore.QRect(100, 80, 51, 21))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(350, 80, 51, 16))
+        self.label_2.setGeometry(QtCore.QRect(350, 80, 61, 16))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_2.setFont(font)
@@ -167,17 +179,25 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.in_list.setFont(font)
-        self.in_list.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.in_list.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.in_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.in_list.setObjectName("in_list")
         self.out_list = QtWidgets.QListWidget(self.centralwidget)
         self.out_list.setGeometry(QtCore.QRect(260, 110, 245, 200))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.out_list.setFont(font)
+        self.out_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.out_list.setObjectName("out_list")
+        self.clear_button = QtWidgets.QPushButton(self.centralwidget)
+        self.clear_button.setGeometry(QtCore.QRect(520, 110, 101, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.clear_button.setFont(font)
+        self.clear_button.setObjectName("clear_button")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 632, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 630, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -189,13 +209,25 @@ class Ui_MainWindow(object):
 
         self.calc_button.clicked.connect(
              lambda: self.show(self.entry.text()))
+        self.calc_button.setShortcut("Enter")
+
+        self.clear_button.clicked.connect(
+             lambda: self.clear_history())
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Calculator"))
         self.calc_button.setText(_translate("MainWindow", "Calculate"))
         self.label.setText(_translate("MainWindow", "Input:"))
         self.label_2.setText(_translate("MainWindow", "Output:"))
+        self.clear_button.setText(_translate("MainWindow", "Clear History"))
+
+    def adjust_sizes(self):
+        """updates the size of the results lists."""
+        main_height = MainWindow.height()
+        if self.out_list.height() != main_height - 60:
+            self.out_list.setFixedHeight(main_height - 130)
+            self.in_list.setFixedHeight(main_height - 130)
 
 
     #    self.calc_button.clicked.connect(
