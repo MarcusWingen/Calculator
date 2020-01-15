@@ -31,7 +31,7 @@ class Ui_MainWindow(object):
             and separate numbers and operators with spaces.
             """
             signs = "()*/+-"
-            string = string.replace(" ", "")  # first remove all spaces
+            string = string.replace(" ", "").replace(",", ".")  # first remove all spaces; convert comma
             string = string.replace("+-", "-").replace("--", "+") \
                 .replace("++", "+").replace("-+", "-") \
                 .replace("*+", "*").replace("/+", "/")
