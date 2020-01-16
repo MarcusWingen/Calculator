@@ -1,3 +1,7 @@
+
+
+
+
 import operator
 from decimal import Decimal
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -36,8 +40,18 @@ class CalculatorMainWindow(object):
             string = string.replace(thousands, "")  # thousand sep only for visuals
             string = string.replace(",", ".")  # handle different commas
             string = string.replace("^", "**")  # convert exponent symbol
-            string = string.replace("e", "2.7182818284590452353602874")  # convert e
-            string = string.replace("pi", "3.1415926535897932384626433")  # convert pi
+            while "e" in string:
+                ind_e = string.find("e")
+                if string[ind_e-1].isdigit():
+                    string = string.replace("e", "*2.7182818284590452353602874", 1)  # x * convert e
+                else:
+                    string = string.replace("e", "2.7182818284590452353602874", 1)  # convert e
+            while "pi" in string:
+                ind_pi = string.find("pi")
+                if string[ind_pi-1].isdigit():
+                    string = string.replace("pi", "*3.1415926535897932384626433", 1)  # convert x * pi
+                else:
+                    string = string.replace("pi", "3.1415926535897932384626433")  # convert pi
             return string
 
         def handle_spaces(string):
