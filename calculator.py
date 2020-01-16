@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
             """remove all present whitespaces, reduce double-operators
             and separate numbers and operators with spaces.
             """
-            signs = "()*/+-"
+            signs = "()*/%+-"
             string = string.replace(" ", "")  # first remove all spaces
             string = string.replace("+-", "-").replace("--", "+") \
                 .replace("++", "+").replace("-+", "-") \
@@ -55,12 +55,12 @@ class Ui_MainWindow(object):
                             parts.append(" ")
                     if string[i + 1] in signs[2:]:
                         parts.append(" ")
-                if x in signs[2:-1]:  # + * /
+                if x in signs[2:-1]:  # + * / %
                     if string[i + 1].isdigit():
                         parts.append(" ")
                     if string[i + 1] in signs[:2]:  # string[i+1] in signs[4:] or
                         parts.append(" ")
-                    if string[i + 1] in signs[4:]:
+                    if string[i + 1] in signs[5:]:
                         parts.append(" ")
                 if x in signs[:2] and string[i + 1] in signs[2:]:
                     parts.append(" ")
@@ -74,9 +74,9 @@ class Ui_MainWindow(object):
             ops = {'+': operator.add, '+-': operator.sub, '-+': operator.sub,
                    '-': operator.sub, '--': operator.add,
                    '*': operator.mul, '**': operator.pow,
-                   '/': operator.truediv, "//": operator.floordiv}
-            # print(f"input: {arr}")
-            first_ops = ["*", "/", "//"]  # "**" treated first
+                   '/': operator.truediv, "//": operator.floordiv, "%": operator.mod}
+            print(f"input: {arr}")
+            first_ops = ["*", "/", "//", "%"]  # "**" treated first
             second_ops = ["+", "+-", "-+", "-", "--"]
             if len(arr) > 1 and arr[0] == "-":  # handle negative first number
                 arr[1] = str(float(arr[1]) * -1)
@@ -189,7 +189,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.in_list.setFont(font)
-        self.in_list.setLayoutDirection(QtCore.Qt.RightToLeft)
+        #self.in_list.setLayoutDirection(QtCore.Qt.RightToLeft) # sometimes turns part of expression . buggy
         self.in_list.setAutoScroll(False)
         self.in_list.setDragEnabled(True)
         self.in_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
