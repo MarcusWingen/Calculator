@@ -1,6 +1,7 @@
 import operator
-import locale
 from PyQt5 import QtCore, QtGui, QtWidgets
+import locale
+locale.setlocale(locale.LC_ALL, '')
 
 class Ui_MainWindow(object):
     def __init__(self):
@@ -12,7 +13,6 @@ class Ui_MainWindow(object):
 
     def show(self, expression):
         """show result of entered expression in lists."""
-        locale.setlocale(locale.LC_ALL, '')
         result = self.calc(expression)
         output = f"{result:n}"
         self.in_list.insertItem(0, expression)
@@ -20,18 +20,27 @@ class Ui_MainWindow(object):
         self.entry.setText(output)
 
     def clear_history(self):
+        """clear previously computed results."""
         self.in_list.clear()
         self.out_list.clear()
 
     def calc(self, expression):
         """handle string input and return result."""
 
+        def handle_separators(string):
+            """remove thousands separators from input string."""
+            separators = locale.localeconv()
+            thousands = separators["thousands_sep"]
+            string = string.replace(thousands, "")  # thousand sep are only for visuals
+            string = string.replace(",", ".")  # handle different commas
+            return string
+
         def handle_whitespaces(string):
             """remove all present whitespaces, reduce double-operators
             and separate numbers and operators with spaces.
             """
             signs = "()*/+-"
-            string = string.replace(" ", "").replace(",", ".")  # first remove all spaces; convert comma
+            string = string.replace(" ", "")  # first remove all spaces
             string = string.replace("+-", "-").replace("--", "+") \
                 .replace("++", "+").replace("-+", "-") \
                 .replace("*+", "*").replace("/+", "/")
@@ -133,6 +142,7 @@ class Ui_MainWindow(object):
             string = string[:start] + str(result) + string[end + 1:]
             return string
 
+        expression = handle_separators(expression)
         string = handle_whitespaces(expression)
         while "(" in string:
             string = inner_parentheses(string)
@@ -180,6 +190,8 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.in_list.setFont(font)
         self.in_list.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.in_list.setAutoScroll(False)
+        self.in_list.setDragEnabled(True)
         self.in_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.in_list.setObjectName("in_list")
         self.out_list = QtWidgets.QListWidget(self.centralwidget)
@@ -187,6 +199,8 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.out_list.setFont(font)
+        self.out_list.setAutoScroll(False)
+        self.out_list.setDragEnabled(True)
         self.out_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.out_list.setObjectName("out_list")
         self.clear_button = QtWidgets.QPushButton(self.centralwidget)
@@ -225,10 +239,23 @@ class Ui_MainWindow(object):
     def adjust_sizes(self):
         """updates the size of the results lists."""
         main_height = MainWindow.height()
-        if self.out_list.height() != main_height - 60:
-            self.out_list.setFixedHeight(main_height - 130)
-            self.in_list.setFixedHeight(main_height - 130)
+        main_width = MainWindow.width()
+        if self.out_list.height() != main_height - 60 or\
+                self.entry.width() != main_width - 130:
 
+            self.entry.setFixedWidth(main_width - 130)
+            self.calc_button.setGeometry(QtCore.QRect(main_width - 110, 10, 101, 61))
+            self.clear_button.setGeometry(QtCore.QRect(main_width - 110, 110, 101, 41))
+            in_list_x = self.in_list.x()
+            list_width = (main_width - 130) // 2
+            out_list_x = in_list_x + list_width + 5
+            self.in_list.setGeometry(QtCore.QRect(10, 110, list_width, main_height - 130))
+            self.out_list.setGeometry(QtCore.QRect(out_list_x, 110, list_width, main_height - 130))
+
+            label_x = in_list_x + list_width // 2 - self.label.width() // 2
+            label_2x = out_list_x + list_width // 2 - self.label_2.width() // 2
+            self.label.setGeometry(QtCore.QRect(label_x, 80, 51, 21))
+            self.label_2.setGeometry(QtCore.QRect(label_2x, 80, 51, 21))
 
     #    self.calc_button.clicked.connect(
    #         lambda: self.show(self.entry.text()))
