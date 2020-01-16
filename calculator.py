@@ -1,4 +1,5 @@
 import operator
+import decimal
 from PyQt5 import QtCore, QtGui, QtWidgets
 import locale
 locale.setlocale(locale.LC_ALL, '')
@@ -27,12 +28,15 @@ class Ui_MainWindow(object):
     def calc(self, expression):
         """handle string input and return result."""
 
-        def handle_separators(string):
+        def format_input(string):
             """remove thousands separators from input string."""
             separators = locale.localeconv()
             thousands = separators["thousands_sep"]
             string = string.replace(thousands, "")  # thousand sep are only for visuals
             string = string.replace(",", ".")  # handle different commas
+            string = string.replace("^", "**")  # convert exponent symbol
+            string = string.replace("e", "2.7182818284590452353602874")  # convert e
+            string = string.replace("pi", "3.1415926535897932384626433")  # convert pi
             return string
 
         def handle_whitespaces(string):
@@ -74,12 +78,13 @@ class Ui_MainWindow(object):
             ops = {'+': operator.add, '+-': operator.sub, '-+': operator.sub,
                    '-': operator.sub, '--': operator.add,
                    '*': operator.mul, '**': operator.pow,
-                   '/': operator.truediv, "//": operator.floordiv, "%": operator.mod}
+                   '/': operator.truediv, "//": operator.floordiv,
+                   "%": operator.mod}
             print(f"input: {arr}")
             first_ops = ["*", "/", "//", "%"]  # "**" treated first
             second_ops = ["+", "+-", "-+", "-", "--"]
             if len(arr) > 1 and arr[0] == "-":  # handle negative first number
-                arr[1] = str(float(arr[1]) * -1)
+                arr[1] = str(decimal.Decimal(arr[1]) * -1)
                 arr.remove("-")
             if len(arr) > 1 and arr[0] == "+":  # handle negative first number
                 arr.remove("+")
@@ -105,12 +110,12 @@ class Ui_MainWindow(object):
                 # print(f"to solve{arr}, {arr[sign]}")
                 op = arr[sign]
                 try:
-                    num_1 = float(arr[sign - 1])
+                    num_1 = decimal.Decimal(arr[sign - 1])
                 except ValueError:
                     print("Value Error num_1")
                     return -1
                 try:
-                    num_2 = float(arr[sign + 1])
+                    num_2 = decimal.Decimal(arr[sign + 1])
                 except ValueError:
                     print("Value Error num_2")
                     return -1
@@ -125,7 +130,7 @@ class Ui_MainWindow(object):
                     break
                 # print(f" after ops: {arr}, {sign}")
             try:
-                result = float(arr[0])
+                result = decimal.Decimal(arr[0])
             except TypeError:
                 print("Type Error")
                 result = arr[0]
@@ -142,7 +147,7 @@ class Ui_MainWindow(object):
             string = string[:start] + str(result) + string[end + 1:]
             return string
 
-        expression = handle_separators(expression)
+        expression = format_input(expression)
         string = handle_whitespaces(expression)
         while "(" in string:
             string = inner_parentheses(string)
