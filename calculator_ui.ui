@@ -116,7 +116,10 @@
      <bool>true</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::DragOnly</enum>
+     <enum>QAbstractItemView::NoDragDrop</enum>
+    </property>
+    <property name="alternatingRowColors">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QListWidget" name="out_list">
@@ -140,7 +143,10 @@
      <bool>true</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::DragOnly</enum>
+     <enum>QAbstractItemView::NoDragDrop</enum>
+    </property>
+    <property name="alternatingRowColors">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="clear_button">

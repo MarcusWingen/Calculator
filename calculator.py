@@ -1,10 +1,11 @@
 import operator
-import decimal
+from decimal import Decimal
 from PyQt5 import QtCore, QtGui, QtWidgets
 import locale
 locale.setlocale(locale.LC_ALL, '')
 
-class Ui_MainWindow(object):
+
+class CalculatorMainWindow(object):
     def __init__(self):
         super().__init__()
         # timer to scale widgets to window size
@@ -32,15 +33,15 @@ class Ui_MainWindow(object):
             """remove thousands separators from input string."""
             separators = locale.localeconv()
             thousands = separators["thousands_sep"]
-            string = string.replace(thousands, "")  # thousand sep are only for visuals
+            string = string.replace(thousands, "")  # thousand sep only for visuals
             string = string.replace(",", ".")  # handle different commas
             string = string.replace("^", "**")  # convert exponent symbol
             string = string.replace("e", "2.7182818284590452353602874")  # convert e
             string = string.replace("pi", "3.1415926535897932384626433")  # convert pi
             return string
 
-        def handle_whitespaces(string):
-            """remove all present whitespaces, reduce double-operators
+        def handle_spaces(string):
+            """remove all present spaces, reduce double-operators
             and separate numbers and operators with spaces.
             """
             signs = "()*/%+-"
@@ -62,7 +63,7 @@ class Ui_MainWindow(object):
                 if x in signs[2:-1]:  # + * / %
                     if string[i + 1].isdigit():
                         parts.append(" ")
-                    if string[i + 1] in signs[:2]:  # string[i+1] in signs[4:] or
+                    if string[i + 1] in signs[:2]:
                         parts.append(" ")
                     if string[i + 1] in signs[5:]:
                         parts.append(" ")
@@ -80,11 +81,11 @@ class Ui_MainWindow(object):
                    '*': operator.mul, '**': operator.pow,
                    '/': operator.truediv, "//": operator.floordiv,
                    "%": operator.mod}
-            print(f"input: {arr}")
+            # print(f"input: {arr}")
             first_ops = ["*", "/", "//", "%"]  # "**" treated first
             second_ops = ["+", "+-", "-+", "-", "--"]
             if len(arr) > 1 and arr[0] == "-":  # handle negative first number
-                arr[1] = str(decimal.Decimal(arr[1]) * -1)
+                arr[1] = str(Decimal(arr[1]) * -1)
                 arr.remove("-")
             if len(arr) > 1 and arr[0] == "+":  # handle negative first number
                 arr.remove("+")
@@ -110,12 +111,12 @@ class Ui_MainWindow(object):
                 # print(f"to solve{arr}, {arr[sign]}")
                 op = arr[sign]
                 try:
-                    num_1 = decimal.Decimal(arr[sign - 1])
+                    num_1 = Decimal(arr[sign - 1])
                 except ValueError:
                     print("Value Error num_1")
                     return -1
                 try:
-                    num_2 = decimal.Decimal(arr[sign + 1])
+                    num_2 = Decimal(arr[sign + 1])
                 except ValueError:
                     print("Value Error num_2")
                     return -1
@@ -130,7 +131,7 @@ class Ui_MainWindow(object):
                     break
                 # print(f" after ops: {arr}, {sign}")
             try:
-                result = decimal.Decimal(arr[0])
+                result = Decimal(arr[0])
             except TypeError:
                 print("Type Error")
                 result = arr[0]
@@ -148,21 +149,21 @@ class Ui_MainWindow(object):
             return string
 
         expression = format_input(expression)
-        string = handle_whitespaces(expression)
+        string = handle_spaces(expression)
         while "(" in string:
             string = inner_parentheses(string)
-            string = handle_whitespaces(string)
+            string = handle_spaces(string)
         # when all parentheses are solved:
         result = solve_part(string.split())
         if int(result) == result:
             return int(result)
         return result
 
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(630, 355)
-        MainWindow.setMinimumSize(QtCore.QSize(630, 160))
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+    def setup_ui(self, main_window):
+        main_window.setObjectName("MainWindow")
+        main_window.resize(630, 355)
+        main_window.setMinimumSize(QtCore.QSize(630, 160))
+        self.centralwidget = QtWidgets.QWidget(main_window)
         self.centralwidget.setObjectName("centralwidget")
         self.entry = QtWidgets.QLineEdit(self.centralwidget)
         self.entry.setGeometry(QtCore.QRect(10, 10, 500, 61))
@@ -170,6 +171,7 @@ class Ui_MainWindow(object):
         font.setPointSize(16)
         self.entry.setFont(font)
         self.entry.setDragEnabled(True)
+        self.entry.setAcceptDrops(True)
         self.entry.setObjectName("entry")
         self.calc_button = QtWidgets.QPushButton(self.centralwidget)
         self.calc_button.setGeometry(QtCore.QRect(520, 10, 101, 61))
@@ -192,39 +194,39 @@ class Ui_MainWindow(object):
         self.in_list = QtWidgets.QListWidget(self.centralwidget)
         self.in_list.setGeometry(QtCore.QRect(10, 110, 245, 200))
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setPointSize(14)
         self.in_list.setFont(font)
         #self.in_list.setLayoutDirection(QtCore.Qt.RightToLeft) # sometimes turns part of expression . buggy
         self.in_list.setAutoScroll(False)
-        self.in_list.setDragEnabled(True)
         self.in_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.in_list.setObjectName("in_list")
+        self.in_list.setAlternatingRowColors(True)
         self.out_list = QtWidgets.QListWidget(self.centralwidget)
         self.out_list.setGeometry(QtCore.QRect(260, 110, 245, 200))
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setPointSize(14)
         self.out_list.setFont(font)
         self.out_list.setAutoScroll(False)
-        self.out_list.setDragEnabled(True)
         self.out_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.out_list.setObjectName("out_list")
+        self.out_list.setAlternatingRowColors(True)
         self.clear_button = QtWidgets.QPushButton(self.centralwidget)
         self.clear_button.setGeometry(QtCore.QRect(520, 110, 101, 41))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.clear_button.setFont(font)
         self.clear_button.setObjectName("clear_button")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        main_window.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(main_window)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 630, 21))
         self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        main_window.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(main_window)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        main_window.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslate_ui(main_window)
+        QtCore.QMetaObject.connectSlotsByName(main_window)
 
         self.calc_button.clicked.connect(
              lambda: self.show(self.entry.text()))
@@ -233,43 +235,41 @@ class Ui_MainWindow(object):
         self.clear_button.clicked.connect(
              lambda: self.clear_history())
 
-    def retranslateUi(self, MainWindow):
+    def retranslate_ui(self, main_window):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Calculator"))
+        main_window.setWindowTitle(_translate("MainWindow", "Calculator"))
         self.calc_button.setText(_translate("MainWindow", "Calculate"))
         self.label.setText(_translate("MainWindow", "Input:"))
         self.label_2.setText(_translate("MainWindow", "Output:"))
         self.clear_button.setText(_translate("MainWindow", "Clear History"))
 
     def adjust_sizes(self):
-        """updates the size of the results lists."""
+        """update size and position of the window elements."""
         main_height = MainWindow.height()
         main_width = MainWindow.width()
         if self.out_list.height() != main_height - 60 or\
-                self.entry.width() != main_width - 130:
+                self.entry.width() != main_width - 130:     # only do stuff if necessary
 
             self.entry.setFixedWidth(main_width - 130)
             self.calc_button.setGeometry(QtCore.QRect(main_width - 110, 10, 101, 61))
             self.clear_button.setGeometry(QtCore.QRect(main_width - 110, 110, 101, 41))
             in_list_x = self.in_list.x()
             list_width = (main_width - 130) // 2
+            list_height = main_height - 130
             out_list_x = in_list_x + list_width + 5
-            self.in_list.setGeometry(QtCore.QRect(10, 110, list_width, main_height - 130))
-            self.out_list.setGeometry(QtCore.QRect(out_list_x, 110, list_width, main_height - 130))
-
+            self.in_list.setGeometry(QtCore.QRect(10, 110, list_width, list_height))
+            self.out_list.setGeometry(QtCore.QRect(out_list_x, 110, list_width, list_height))
             label_x = in_list_x + list_width // 2 - self.label.width() // 2
             label_2x = out_list_x + list_width // 2 - self.label_2.width() // 2
             self.label.setGeometry(QtCore.QRect(label_x, 80, 51, 21))
             self.label_2.setGeometry(QtCore.QRect(label_2x, 80, 51, 21))
 
-    #    self.calc_button.clicked.connect(
-   #         lambda: self.show(self.entry.text()))
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
+    ui = CalculatorMainWindow()
+    ui.setup_ui(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
