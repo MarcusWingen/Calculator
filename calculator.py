@@ -1,6 +1,24 @@
+"""
+A simple calculator that takes a mathematical expression as input
+and returns the result.
 
+Supported operations:
+Addition (+)
+Subtraction (-)
+Multiplication (*)
+True Division (/)
+Floor Division (//)
+Exponentiation (^ or **)
+Modulus (%)
 
-
+Other features:
+- Multiple levels of round parentheses are supported ( (...(...)...) ).
+- To use e or pi simply type "e" or "pi". (e.g. 2pi = 6,2831...).
+- Values of "pi" and "e" are included with 25 decimal places each.
+- Copy & paste past inputs/outputs from the lists to the entry field.
+- Results are displayed with thousands-separators and commas, specific
+  to the users location.
+"""
 
 import operator
 from decimal import Decimal
@@ -10,6 +28,9 @@ locale.setlocale(locale.LC_ALL, '')
 
 
 class CalculatorMainWindow(object):
+    """Class for the PyQt5 UI,  and methods to update the UI.
+    Also contains function for the calculation.
+    """
     def __init__(self):
         super().__init__()
         # timer to scale widgets to window size
@@ -30,7 +51,8 @@ class CalculatorMainWindow(object):
         self.in_list.clear()
         self.out_list.clear()
 
-    def calc(self, expression):
+    @staticmethod
+    def calc(expression):
         """handle string input and return result."""
 
         def format_input(string):
@@ -69,7 +91,7 @@ class CalculatorMainWindow(object):
                 if x.isdigit() and string[i + 1] in signs[2:]:
                     parts.append(" ")
                 if x == "-":  # +-*/
-                    if i > 0:  # for i=0 only "-" is math. valid and no sep. req.
+                    if i > 0:  # for i=0 only "-" and "+" are valid and no sep. req.
                         if string[i + 1].isdigit() and not string[i - 1] in signs[2:]:
                             parts.append(" ")
                     if string[i + 1] in signs[2:]:
@@ -88,7 +110,7 @@ class CalculatorMainWindow(object):
             # print(proc_string)
             return proc_string
 
-        def solve_part(arr):  # sample input: ['1.5009', '--', '6']
+        def solve_part(arr):
             """solve one part of the equation, like parentheses."""
             ops = {'+': operator.add, '+-': operator.sub, '-+': operator.sub,
                    '-': operator.sub, '--': operator.add,
@@ -96,12 +118,12 @@ class CalculatorMainWindow(object):
                    '/': operator.truediv, "//": operator.floordiv,
                    "%": operator.mod}
             # print(f"input: {arr}")
-            first_ops = ["*", "/", "//", "%"]  # "**" treated first
+            first_ops = ["*", "/", "//", "%"]  # "**" is handled separately
             second_ops = ["+", "+-", "-+", "-", "--"]
             if len(arr) > 1 and arr[0] == "-":  # handle negative first number
                 arr[1] = str(Decimal(arr[1]) * -1)
                 arr.remove("-")
-            if len(arr) > 1 and arr[0] == "+":  # handle negative first number
+            if len(arr) > 1 and arr[0] == "+":  # handle unnecessary but valid op
                 arr.remove("+")
             while len(arr) > 2:
                 op_found = False
@@ -112,7 +134,7 @@ class CalculatorMainWindow(object):
                         break
                 if not op_found:
                     for x in arr:
-                        if x in first_ops:  # find first operand that is '*', '/', or '//'
+                        if x in first_ops:
                             sign = arr.index(x)
                             op_found = True
                             break
@@ -262,7 +284,7 @@ class CalculatorMainWindow(object):
         main_height = MainWindow.height()
         main_width = MainWindow.width()
         if self.out_list.height() != main_height - 60 or\
-                self.entry.width() != main_width - 130:     # only do stuff if necessary
+                self.entry.width() != main_width - 130:     # only resize if necessary
 
             self.entry.setFixedWidth(main_width - 130)
             self.calc_button.setGeometry(QtCore.QRect(main_width - 110, 10, 101, 61))
