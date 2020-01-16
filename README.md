@@ -2,13 +2,13 @@ A simple calculator that takes a mathematical expression as input
 and returns the result.
 
 Supported operations:
-Addition (+)
-Subtraction (-)
-Multiplication (*)
-True Division (/)
-Floor Division (//)
-Exponentiation (^ or **)
-Modulus (%)
+- Addition (+)
+- Subtraction (-)
+- Multiplication (*)
+- True Division (/)
+- Floor Division (//)
+- Exponentiation (^ or **)
+- Modulus (%)
 
 Other features:
 - Multiple levels of round parentheses are supported ( (...(...)...) ).
