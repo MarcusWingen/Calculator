@@ -14,16 +14,17 @@ Modulus (%)
 Other features:
 - Multiple levels of round parentheses are supported ( (...(...)...) ).
 - To use e or pi simply type "e" or "pi". (e.g. 2pi = 6,2831...).
-- Values of "pi" and "e" are included with 25 decimal places each.
 - Copy & paste past inputs/outputs from the lists to the entry field.
 - Results are displayed with thousands-separators and commas, specific
   to the users location.
 """
 
 import operator
+import math
+import locale
+import decimal
 from decimal import Decimal
 from PyQt5 import QtCore, QtGui, QtWidgets
-import locale
 locale.setlocale(locale.LC_ALL, '')
 
 
@@ -41,7 +42,10 @@ class CalculatorMainWindow(object):
     def show(self, expression):
         """show result of entered expression in lists."""
         result = self.calc(expression)
-        output = f"{result:n}"
+        if not isinstance(result, str):
+            output = f"{result:n}"
+        else:
+            output = result
         self.in_list.insertItem(0, expression)
         self.out_list.insertItem(0, output)
         self.entry.setText(output)
@@ -65,15 +69,15 @@ class CalculatorMainWindow(object):
             while "e" in string:
                 ind_e = string.find("e")
                 if string[ind_e-1].isdigit():
-                    string = string.replace("e", "*2.7182818284590452353602874", 1)  # x * convert e
+                    string = string.replace("e", f"*{math.e}", 1)  # x * convert e
                 else:
-                    string = string.replace("e", "2.7182818284590452353602874", 1)  # convert e
+                    string = string.replace("e", f"{math.e}", 1)  # convert e
             while "pi" in string:
                 ind_pi = string.find("pi")
                 if string[ind_pi-1].isdigit():
-                    string = string.replace("pi", "*3.1415926535897932384626433", 1)  # convert x * pi
+                    string = string.replace("pi", f"*{math.pi}", 1)  # convert x * pi
                 else:
-                    string = string.replace("pi", "3.1415926535897932384626433")  # convert pi
+                    string = string.replace("pi", f"{math.pi}")  # convert pi
             return string
 
         def handle_spaces(string):
@@ -143,34 +147,37 @@ class CalculatorMainWindow(object):
                     for x in arr:
                         if x in second_ops:
                             sign = arr.index(x)
+                            op_found = True
                             break
-                # print(f"to solve{arr}, {arr[sign]}")
+                if not op_found:
+                    return "Invalid operator"
+                #print(f"to solve{arr}, {arr[sign]}")
                 op = arr[sign]
                 try:
                     num_1 = Decimal(arr[sign - 1])
-                except ValueError:
-                    print("Value Error num_1")
-                    return -1
+                except decimal.InvalidOperation:
+                    return "Invalid operation"
                 try:
                     num_2 = Decimal(arr[sign + 1])
-                except ValueError:
-                    print("Value Error num_2")
-                    return -1
-                try:
-                    arr[sign] = ops[op](num_1, num_2)
+                except decimal.InvalidOperation:
+                    return "Invalid operation"
+                try:  # calculation
+                    if op == "//":  # decimal does not handle floordiv of num_1 < 0 correctly
+                        arr[sign] = ops[op](float(num_1), float(num_2))
+                    else:
+                        arr[sign] = ops[op](num_1, num_2)
                     arr[sign - 1] = None
                     arr[sign + 1] = None
                     arr.remove(None)
                     arr.remove(None)
                 except ZeroDivisionError:
                     print("zero devision")
-                    break
+                    return "Zero Division Error"
                 # print(f" after ops: {arr}, {sign}")
             try:
                 result = Decimal(arr[0])
-            except TypeError:
-                print("Type Error")
-                result = arr[0]
+            except decimal.InvalidOperation:
+                return "Invalid operation"
             return result
 
         def inner_parentheses(string):
@@ -180,9 +187,12 @@ class CalculatorMainWindow(object):
             par = string[start:end].lstrip("(").rstrip(")")
             par_list = par.split()  # split into list by " "
             result = solve_part(par_list)
-            # modify string:
-            string = string[:start] + str(result) + string[end + 1:]
-            return string
+            if not isinstance(result, str):
+                # modify string:
+                string = string[:start] + str(result) + string[end + 1:]
+                return string
+
+            return result
 
         expression = format_input(expression)
         string = handle_spaces(expression)
@@ -191,11 +201,15 @@ class CalculatorMainWindow(object):
             string = handle_spaces(string)
         # when all parentheses are solved:
         result = solve_part(string.split())
-        if int(result) == result:
-            return int(result)
+        if not isinstance(result, str):
+            if int(result) == result:
+                return int(result)
+            return result
+
         return result
 
     def setup_ui(self, main_window):
+        """Initialize user interface."""
         main_window.setObjectName("MainWindow")
         main_window.resize(630, 355)
         main_window.setMinimumSize(QtCore.QSize(630, 160))
@@ -232,7 +246,7 @@ class CalculatorMainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(14)
         self.in_list.setFont(font)
-        #self.in_list.setLayoutDirection(QtCore.Qt.RightToLeft) # sometimes turns part of expression . buggy
+        #self.in_list.setLayoutDirection(QtCore.Qt.RightToLeft) # may flip part of expression.
         self.in_list.setAutoScroll(False)
         self.in_list.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.in_list.setObjectName("in_list")
@@ -265,13 +279,14 @@ class CalculatorMainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
         self.calc_button.clicked.connect(
-             lambda: self.show(self.entry.text()))
+            lambda: self.show(self.entry.text()))
         self.calc_button.setShortcut("Enter")
 
         self.clear_button.clicked.connect(
-             lambda: self.clear_history())
+            lambda: self.clear_history())
 
     def retranslate_ui(self, main_window):
+        """Set title of widgets and window"""
         _translate = QtCore.QCoreApplication.translate
         main_window.setWindowTitle(_translate("MainWindow", "Calculator"))
         self.calc_button.setText(_translate("MainWindow", "Calculate"))
