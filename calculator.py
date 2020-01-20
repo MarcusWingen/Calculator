@@ -150,8 +150,8 @@ class CalculatorMainWindow(object):
                             op_found = True
                             break
                 if not op_found:
-                    return "Invalid operator"
-                #print(f"to solve{arr}, {arr[sign]}")
+                    return "Invalid operation"
+                # print(f"to solve{arr}, {arr[sign]}")
                 op = arr[sign]
                 try:
                     num_1 = Decimal(arr[sign - 1])
@@ -162,7 +162,7 @@ class CalculatorMainWindow(object):
                 except decimal.InvalidOperation:
                     return "Invalid operation"
                 try:  # calculation
-                    if op == "//":  # decimal does not handle floordiv of num_1 < 0 correctly
+                    if op == "//" or op == "%":  # decimal does not handle // and % of num_1 < 0 correctly
                         arr[sign] = ops[op](float(num_1), float(num_2))
                     else:
                         arr[sign] = ops[op](num_1, num_2)
@@ -171,7 +171,6 @@ class CalculatorMainWindow(object):
                     arr.remove(None)
                     arr.remove(None)
                 except ZeroDivisionError:
-                    print("zero devision")
                     return "Zero Division Error"
                 # print(f" after ops: {arr}, {sign}")
             try:
