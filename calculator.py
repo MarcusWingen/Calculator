@@ -228,8 +228,6 @@ class CalculatorMainWindow(object):
         font.setPointSize(12)
         self.calc_button.setFont(font)
         self.calc_button.setObjectName("calc_button")
-        self.calc_return = QtWidgets.QPushButton(self.centralwidget)  # only for hotkey
-        self.calc_return.setGeometry(QtCore.QRect(0, 0, 0, 0))  # not visible
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(100, 80, 51, 21))
         font = QtGui.QFont()
@@ -279,13 +277,13 @@ class CalculatorMainWindow(object):
         self.retranslate_ui(main_window)
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
+        # Add two shortcuts to calc_button:
+        for sequence in ("Enter", "Return",):
+            shorcut = QtWidgets.QShortcut(sequence, self.calc_button)
+            shorcut.activated.connect(self.calc_button.animateClick)
+
         self.calc_button.clicked.connect(
             lambda: self.show(self.entry.text()))
-        self.calc_button.setShortcut("Enter")
-        self.calc_return.clicked.connect(
-            lambda: self.show(self.entry.text()))
-        self.calc_return.setShortcut("Return")
-
         self.clear_button.clicked.connect(
             lambda: self.clear_history())
 
