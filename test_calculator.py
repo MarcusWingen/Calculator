@@ -43,6 +43,17 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(calc_function("((10**3 + 2**3) / (6 / 3))/-2"), -252)
         self.assertEqual(calc_function("((10**3 + 2**3) / (6 / 3))/-2+15,13"), Decimal("-236.87"))
         self.assertEqual(calc_function("((10**3 + 2**3) / (6 / 3))/-2+(15,13*-2)"), Decimal("-282.26"))
+        self.assertEqual(calc_function("(100**2-5+(2*2,5))"), 10000)
+
+    def test_adv_ops(self):
+        """Test for sqrt, log, ln functions."""
+        calc_function = calculator.CalculatorMainWindow.calc
+        self.assertEqual(calc_function("sqrt(4)"), 2)
+        self.assertEqual(calc_function("sqrt(-100)"), "Invalid operation")
+        self.assertEqual(calc_function("sqrt((4+5)*10+10)"), 10)
+        self.assertEqual(calc_function("sqrt(-4*-4)"), 4)
+        self.assertEqual(calc_function("sqrt(100**2-5+(2*2,5)+0)"), 100)
+
 
     def test_special_values(self):
         """Test pi and e."""

@@ -18,6 +18,8 @@ Other features:
 - Results are displayed with thousands-separators and commas, specific
   to the users location.
 """
+# todo add functions for sqrt, log, ln:
+# sqrt(4) = 2, log(100) = 2, ln(e) = 1
 
 import operator
 import math
@@ -186,13 +188,21 @@ class CalculatorMainWindow(object):
             par = string[start:end].lstrip("(").rstrip(")")
             par_list = par.split()  # split into list by " "
             result = solve_part(par_list)
-            if not isinstance(result, str):
-                # modify string:
-                string = string[:start] + str(result) + string[end + 1:]
+            if not isinstance(result, str):  # if str -> Error
+                if string[:start].endswith("sqrt"):
+                    try:
+                        result = math.sqrt(result)
+                    except ValueError:
+                        return "Invalid operation"
+                    string = string[:start-4] + str(result) + string[end + 1:]
+                    return string
+                else:
+                    string = string[:start] + str(result) + string[end + 1:]
                 return string
 
             return result
 
+        # steps for the calculation:
         expression = format_input(expression)
         string = handle_spaces(expression)
         while "(" in string:
