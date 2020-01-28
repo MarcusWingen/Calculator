@@ -16,3 +16,13 @@ Other features:
 - Copy & paste past inputs/outputs from the lists to the entry field.
 - Results are displayed with thousands-separators and commas, specific
   to the users location.
+- Square root (sqrt) <sup>1</sup>
+- Natural logarithm (base e) (ln) <sup>1</sup>
+- Common logarithm (base 10) (log) <sup>1</sup>
+- Factorial (fact) <sup>1</sup> <sup>2</sup>
+- Absolute value (abs) <sup>1</sup>
+
+<sup>1</sup> These operations are written with the number in parentheses. eg:  
+sqrt(4) = 2; log(10^2) = 2; fact(sqrt(25)) = 120; abs(-10)**3 == 1000  
+
+<sup>2</sup> fact only supports positive integers.
