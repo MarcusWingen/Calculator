@@ -11,8 +11,8 @@ Floor Division (//)
 Exponentiation (^ or **)
 Modulus (%)
 Square root (sqrt)*
-Natural logarithm (ln)*
-Decadic logarithm (log)*
+Natural logarithm (base e) (ln)*
+Common logarithm (base 10) (log)*
 Factorial (fact)*²
 Absolute value (abs)*
 
@@ -27,8 +27,6 @@ Other features:
 - Results are displayed with thousands-separators and commas, specific
   to the users location.
 """
-# todo add functions for sqrt, log, ln:
-# sqrt(4) = 2, log(100) = 2, ln(e) = 1
 
 import operator
 import math
