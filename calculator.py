@@ -181,6 +181,21 @@ class CalculatorMainWindow(object):
                 return "Invalid operation"
             return result
 
+        def adv_ops(number, adv_op):
+            """solve advanced operations like 'sqrt', 'log' etc."""
+            try:
+                if adv_op == "sqrt":
+                    result = math.sqrt(number)
+                elif adv_op == "log":
+                    result = math.log10(number)
+                elif adv_op == "ln":
+                    result = math.log(number)
+                else:
+                    result = "Invalid operation"
+            except ValueError:
+                return "Invalid operation"
+            return result
+
         def inner_parentheses(string):
             """find inner parentheses and return solved contents."""
             start = string.rfind("(")
@@ -188,16 +203,20 @@ class CalculatorMainWindow(object):
             par = string[start:end].lstrip("(").rstrip(")")
             par_list = par.split()  # split into list by " "
             result = solve_part(par_list)
+
+            advanced_operators = ("sqrt", "log", "ln")
+
             if not isinstance(result, str):  # if str -> Error
-                if string[:start].endswith("sqrt"):
-                    try:
-                        result = math.sqrt(result)
-                    except ValueError:
-                        return "Invalid operation"
-                    string = string[:start-4] + str(result) + string[end + 1:]
-                    return string
-                else:
-                    string = string[:start] + str(result) + string[end + 1:]
+                for adv_op in advanced_operators:
+                    if string[:start].endswith(adv_op):
+                        result = adv_ops(result, adv_op)
+                        if not isinstance(result, str):
+                            string = string[:start - len(adv_op)] + str(result) + string[end + 1:]
+                            return string
+                        else:
+                            return "Invalid operation"
+
+                string = string[:start] + str(result) + string[end + 1:]
                 return string
 
             return result

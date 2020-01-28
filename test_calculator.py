@@ -53,6 +53,9 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(calc_function("sqrt((4+5)*10+10)"), 10)
         self.assertEqual(calc_function("sqrt(-4*-4)"), 4)
         self.assertEqual(calc_function("sqrt(100**2-5+(2*2,5)+0)"), 100)
+        self.assertEqual(calc_function("log(100)"), 2)
+        self.assertEqual(calc_function("log(-100)"), "Invalid operation")
+        self.assertEqual(calc_function("ln(e)"), 1)
 
 
     def test_special_values(self):
