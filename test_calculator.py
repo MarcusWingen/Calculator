@@ -61,6 +61,8 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(calc_function("fact(5)"), 120)
         self.assertEqual(calc_function("fact(0)"), 1)
         self.assertEqual(calc_function("ln(4+9*2)"), Decimal("3.091042453358316"))
+        self.assertEqual(calc_function("fact(sqrt(25))"), 120)
+        self.assertEqual(calc_function("log(sqrt(5**2)*20)"), 2)
 
 
     def test_special_values(self):

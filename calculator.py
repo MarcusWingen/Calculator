@@ -10,6 +10,15 @@ True Division (/)
 Floor Division (//)
 Exponentiation (^ or **)
 Modulus (%)
+Square root (sqrt)*
+Natural logarithm (ln)*
+Decadic logarithm (log)*
+Factorial (fact)*²
+Absolute value (abs)*
+
+* these operations are written with the number in parentheses:
+sqrt(4) = 2; log(10^2) = 2; fact(sqrt(25)) = 120; abs(-10)**3 == 1000
+² fact only supports positive integers.
 
 Other features:
 - Multiple levels of round parentheses are supported ( (...(...)...) ).
