@@ -13,19 +13,20 @@ Modulus (%)
 Square root (sqrt)*
 Natural logarithm (base e) (ln)*
 Common logarithm (base 10) (log)*
-Factorial (fact)*²
+Factorial (fact)* **
 Absolute value (abs)*
-
-* these operations are written with the number in parentheses:
-sqrt(4) = 2; log(10^2) = 2; fact(sqrt(25)) = 120; abs(-10)**3 == 1000
-² fact only supports positive integers.
 
 Other features:
 - Multiple levels of round parentheses are supported ( (...(...)...) ).
 - To use e or pi simply type "e" or "pi". (e.g. 2pi = 6,2831...).
-- Copy & paste past inputs/outputs from the lists to the entry field.
 - Results are displayed with thousands-separators and commas, specific
   to the users location.
+- Click on list items to add them to the entry field.
+- Double click on list items to overwrite the entry field.
+
+* these operations are written with the number in parentheses:
+sqrt(4) = 2; log(10^2) = 2; fact(sqrt(25)) = 120; abs(-10)**3 == 1000
+** fact only supports positive integers.
 """
 
 import operator
@@ -338,6 +339,11 @@ class CalculatorMainWindow(object):
         self.out_list.itemClicked.connect(
             lambda: self.out_list_clicked())
 
+        self.in_list.itemDoubleClicked.connect(
+            lambda: self.in_list_double_clicked())
+        self.out_list.itemDoubleClicked.connect(
+            lambda: self.out_list_double_clicked())
+
     def retranslate_ui(self, main_window):
         """Set title of widgets and window"""
         _translate = QtCore.QCoreApplication.translate
@@ -347,20 +353,34 @@ class CalculatorMainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Output:"))
         self.clear_button.setText(_translate("MainWindow", "Clear History"))
 
-    def in_list_clicked(self):
-        """Set the input string to the value of the
+    def in_list_double_clicked(self):
+        """Set the entry to the value of the
         clicked item in the in_list.
         """
         clicked_item = self.in_list.currentItem().text()
         self.entry.setText(f"{clicked_item}")
         self.entry.setFocus()
 
-    def out_list_clicked(self):
-        """Set the input string to the value of the
+    def out_list_double_clicked(self):
+        """Set the entry to the value of the
         clicked item in the out_list.
         """
         clicked_item = self.out_list.currentItem().text()
         self.entry.setText(f"{clicked_item}")
+        self.entry.setFocus()
+
+    def in_list_clicked(self):
+        """Add the clicked input to the entry field."""
+        current_entry = self.entry.text()
+        clicked_item = self.in_list.currentItem().text()
+        self.entry.setText(current_entry + f"{clicked_item}")
+        self.entry.setFocus()
+
+    def out_list_clicked(self):
+        """Add the clicked output to the entry field."""
+        current_entry = self.entry.text()
+        clicked_item = self.out_list.currentItem().text()
+        self.entry.setText(current_entry + f"{clicked_item}")
         self.entry.setFocus()
 
     def adjust_sizes(self):
