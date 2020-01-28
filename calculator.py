@@ -190,6 +190,13 @@ class CalculatorMainWindow(object):
                     result = math.log10(number)
                 elif adv_op == "ln":
                     result = math.log(number)
+                elif adv_op == "fact":
+                    if number == int(number):
+                        result = math.factorial(number)
+                    else:
+                        return "Invalid operation"
+                elif adv_op == "abs":
+                    result = abs(number)
                 else:
                     result = "Invalid operation"
             except ValueError:
@@ -204,7 +211,7 @@ class CalculatorMainWindow(object):
             par_list = par.split()  # split into list by " "
             result = solve_part(par_list)
 
-            advanced_operators = ("sqrt", "log", "ln")
+            advanced_operators = ("sqrt", "log", "ln", "fact", "abs")
 
             if not isinstance(result, str):  # if str -> Error
                 for adv_op in advanced_operators:
