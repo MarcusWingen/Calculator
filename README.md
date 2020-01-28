@@ -20,7 +20,8 @@ Other features:
 - To use e or pi simply type "e" or "pi". (e.g. 2pi = 6,2831...).
 - Results are displayed with thousands-separators and commas, specific
   to the users location.
-- Click on list items to move them to the entry field (overrides current entry).
+- Click on list items to add them to the entry field.
+- Double click on list items to overwrite the entry field.
 
 
 <sup>1</sup> These operations are written with the number in parentheses. eg:  
