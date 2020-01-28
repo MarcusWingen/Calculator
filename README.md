@@ -25,6 +25,6 @@ Other features:
 
 
 <sup>1</sup> These operations are written with the number in parentheses. eg:  
-sqrt(4) = 2; log(10^2) = 2; fact(sqrt(25)) = 120; abs(-10)**3 == 1000  
+sqrt(4) = 2; log(10^2) = 2; fact(sqrt(25)) = 120; abs(-10)**3 = 1000  
 
 <sup>2</sup> fact only supports positive integers.
