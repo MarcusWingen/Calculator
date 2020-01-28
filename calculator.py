@@ -58,11 +58,13 @@ class CalculatorMainWindow(object):
         self.in_list.insertItem(0, expression)
         self.out_list.insertItem(0, output)
         self.entry.setText(output)
+        self.entry.setFocus()
 
     def clear_history(self):
         """clear previously computed results."""
         self.in_list.clear()
         self.out_list.clear()
+        self.entry.setFocus()
 
     @staticmethod
     def calc(expression):
@@ -330,6 +332,12 @@ class CalculatorMainWindow(object):
         self.clear_button.clicked.connect(
             lambda: self.clear_history())
 
+        # Click events for lists:
+        self.in_list.itemClicked.connect(
+            lambda: self.in_list_clicked())
+        self.out_list.itemClicked.connect(
+            lambda: self.out_list_clicked())
+
     def retranslate_ui(self, main_window):
         """Set title of widgets and window"""
         _translate = QtCore.QCoreApplication.translate
@@ -338,6 +346,22 @@ class CalculatorMainWindow(object):
         self.label.setText(_translate("MainWindow", "Input:"))
         self.label_2.setText(_translate("MainWindow", "Output:"))
         self.clear_button.setText(_translate("MainWindow", "Clear History"))
+
+    def in_list_clicked(self):
+        """Set the input string to the value of the
+        clicked item in the in_list.
+        """
+        clicked_item = self.in_list.currentItem().text()
+        self.entry.setText(f"{clicked_item}")
+        self.entry.setFocus()
+
+    def out_list_clicked(self):
+        """Set the input string to the value of the
+        clicked item in the out_list.
+        """
+        clicked_item = self.out_list.currentItem().text()
+        self.entry.setText(f"{clicked_item}")
+        self.entry.setFocus()
 
     def adjust_sizes(self):
         """update size and position of the window elements."""
